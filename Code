@@ -1,0 +1,145 @@
+create database hospital;
+use hospital;
+CREATE TABLE Doctor(
+  D_ID int NOT NULL,
+  D_Name varchar(100) NOT NULL,
+    Gender varchar(100) NOT NULL,
+    Field varchar(100) NOT NULL,
+    Contact_No bigint,
+    city varchar(100),
+    PRIMARY KEY(D_ID)
+);
+CREATE TABLE Patient(
+  P_ID int NOT NULL,
+  P_Name varchar(100) NOT NULL,
+    Gender varchar(100) NOT NULL,
+    Disease varchar(100) NOT NULL,
+    Contact_No bigint,
+    Age int,
+  D_ID int NOT NULL,
+    PRIMARY KEY(P_ID),
+    FOREIGN KEY(D_ID) REFERENCES Doctor(D_ID)
+);
+CREATE TABLE Ward(
+  P_Name varchar(100) NOT NULL,
+    Room_No varchar(100) NOt NULL,
+    Category varchar(100),
+    Floor varchar(100)
+);
+CREATE TABLE Diagnose(
+  D_Name varchar(100) NOT NULL,
+  Diagnosis varchar(100) NOT NULL,
+  Prescription varchar(100) NOT NULL,
+    P_Name varchar(100)
+);
+CREATE TABLE Details(
+  P_ID int NOT NULL,
+    P_Name varchar(100),
+    D_Name varchar(100),
+    Admitted date,
+    Discharge date
+);
+
+INSERT INTO Doctor(D_ID,D_Name,Gender,Field,Contact_No,city) 
+VALUES(101,'Rahul','Male','MBBS',9652341870,'Delhi'),
+(102,'Priya','Female','BDS',9752351872,'Mumbai'),
+(103,'Vikram','Male','MBBS',9112340070,'Meerut'),
+(104,'Riya','Female','Surgeon',9052141000,'Saharanpur'),
+(105,'Atul','Male','BHMS',8969341870,'Delhi'),
+(106,'Mohan','Male','Surgeon',9652341870,'Kolkata'),
+(107,'Anjali','Female','BAMS',8852312270,'Banglore'),
+(108,'Ahmed','Male','BUMS',7962341870,'Mumbai'),
+(109,'Sakshi','Female','MBBS',7892341170,'Goa'),
+(110,'Aisha','Female','BNYS',9600341070,'Kolkata');
+
+INSERT INTO Patient(P_ID,P_Name,Gender,Disease,Contact_No,Age,D_ID)
+VALUES(14110,'Aarav','Male','Diarrhea',8057263118,26,103),
+(14111,'Anant','Male','Dengue',9257263696,30,105),
+(14112,'Eshank','Male','Angioplasty',7557211118,40,104),
+(14113,'Trisha','Female','Flu',9557263100,20,109),
+(14114,'Wamiq','Male','Cancer',7521007220,35,108),
+(14115,'Ranbir','Male','Migraine',8357263169,45,107),
+(14116,'Poonam','Female','Lupus',9457263396,38,101),
+(14117,'Yash','Male','Oral Cancer',9957263000,52,102),
+(14118,'Vijay','Male','Tumor',9357263147,27,106),
+(14119,'Aryan','Male','Depression',8557260000,22,110);
+
+INSERT INTO Diagnose(D_Name,Diagnosis,Prescription,P_Name) 
+VALUES('Vikram','Diarrhea','Rest','Aarav'),
+('Ahmed','Cancer','Admit','Wamiq'),
+('Priya','Oral Cancer','Surgury','Yash'),
+('Atul','Dengue','Admit','Anant'),
+('Sakshi','Flu','Rest','Trisha'),
+('Anjali','Migraine','Rest','Ranbir'),
+('Aisha','Depression','Admit','Aryan'),
+('Riya','Angioplasty','Surgury','Eshank'),
+('Rahul','Lupus','Rest','Poonam'),
+('Mohan','Tumor','Surgury','Vijay');
+
+
+INSERT INTO Ward(P_Name,Room_No,Category,Floor) 
+VALUES('Aarav','G002','Lower','Ist'),
+('Eshank','W780','ICU','IInd'),
+('Aryan','R471','Deluxe','IIIrd'),
+('Anant','G089','NW','IVth'),
+('Trisha','T352','Deluxe','IIth'),
+('Wamiq','R674','Lower','IIIrd'),
+('Vijay','W780','ICU','IVth'), 
+('Yash','R471','ICU','IIIrd');
+
+INSERT INTO Details(P_ID,P_Name,D_Name,Admitted,Discharge)
+VALUES('14116','Poonam','Rahul','2021-10-01','2021-10-01'),
+('14115','Ranbir','Anjali','2021-10-15','2021-10-15'),
+('14119','Aryan','Aisha','2021-12-25','2022-01-10'),
+('14111','Anant','Atul','2021-09-27','2021-11-30'),
+('14112','Eshank','Riya','2021-12-10','2022-02-01'),
+('14110','Aarav','Vikram','2021-01-20','2021-01-30'),
+('14118','Vijay','Mohan','2021-08-15','2021-09-16'),
+('14113','Trisha','Sakshi','2021-03-17','2022-04-05'),
+('14114','Wamiq','Ahmed','2021-06-24','2021-11-29'),
+('14117','Yash','Priya','2022-01-23','2022-03-19');
+
+select*from Doctor;
+ 
+select*from Patient;
+ 
+select*from Diagnose;
+ 
+select*from Ward;
+ 
+select*from Details;
+ 
+select*from patient where age<40;
+ 
+select *from doctor where field='MBBS' AND city ='delhi';
+ 
+select *from patient where gender='Male' AND age > 30;
+ 
+select *from patient where gender='Female' AND age < 30;
+ 
+select min(age) from patient;
+ 
+select D_Name from  Doctor where D_ID in(Select D_ID from Patient where age<40);
+ 
+select P_ID from Patient where D_ID in(Select D_ID from Doctor where City='Delhi');
+ 
+select D_Name from  Doctor where D_ID in(Select D_ID from Patient where Gender='Female');
+ 
+select D_Name from  Doctor where D_ID in(Select D_ID from Patient where Disease='Depression');
+ 
+select P_Name,Room_No from Ward natural join Patient where Floor='IIIrd';
+ 
+alter table Details add constraint foreign key(P_ID) references Patient(P_ID);
+select D_Name from Doctor where D_ID=(select D_ID from Patient where P_Name=(select P_Name from details where Admitted='2021-12-10'));
+ 
+select * from doctor natural join details;
+ 
+select * from patient natural join ward;
+
+select * from ward order by P_Name;
+ 
+select P_Name,diagnosis  from diagnose  order by P_Name desc;
+ 
+select *from details order by Admitted asc ;
+ 
+
